@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CryptoMind AI — Intelligent Trading Bot</title>
+  <meta name="description" content="Advanced AI-powered cryptocurrency trading bot with real-time signals, portfolio tracking, and automated strategies." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <!-- Lightweight Charts for candlesticks -->
+  <script src="https://unpkg.com/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js"></script>
+</head>
+<body>
+  <!-- Animated Background -->
+  <div class="bg-grid"></div>
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- Sidebar Navigation -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16 2L28 9V23L16 30L4 23V9L16 2Z" fill="url(#logoGrad)" />
+            <path d="M16 8L22 12V20L16 24L10 20V12L16 8Z" fill="rgba(0,0,0,0.3)" />
+            <circle cx="16" cy="16" r="3" fill="white" />
+            <defs>
+              <linearGradient id="logoGrad" x1="4" y1="2" x2="28" y2="30" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#6C63FF" />
+                <stop offset="1" stop-color="#00D4FF" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-title">CryptoMind</span>
+          <span class="logo-sub">AI Trading Bot</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bot-status" id="botStatusBadge">
+      <div class="status-dot active"></div>
+      <span class="status-text">Bot Active</span>
+      <div class="status-toggle">
+        <input type="checkbox" id="botToggle" checked />
+        <label for="botToggle" class="toggle-label"></label>
+      </div>
+    </div>
+
+    <ul class="nav-links">
+      <li class="nav-item active" id="nav-dashboard" onclick="switchTab('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span>Dashboard</span>
+      </li>
+      <li class="nav-item" id="nav-markets" onclick="switchTab('markets')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+        <span>Markets</span>
+      </li>
+      <li class="nav-item" id="nav-signals" onclick="switchTab('signals')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+        <span>AI Signals</span>
+        <span class="badge" id="signalBadge">3</span>
+      </li>
+      <li class="nav-item" id="nav-portfolio" onclick="switchTab('portfolio')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+        <span>Portfolio</span>
+      </li>
+      <li class="nav-item" id="nav-trades" onclick="switchTab('trades')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        <span>Trade History</span>
+      </li>
+      <li class="nav-item" id="nav-backtest" onclick="switchTab('backtest')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>Backtesting</span>
+      </li>
+      <li class="nav-item" id="nav-settings" onclick="switchTab('settings')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Settings</span>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <div class="api-status">
+        <div class="api-dot"></div>
+        <span>Binance WS Connecting...</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-btn" onclick="toggleSidebar()" id="menuBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="page-title" id="pageTitle">Dashboard</div>
+      </div>
+      <div class="topbar-right">
+        <div class="crypto-ticker" id="cryptoTicker">
+          <div class="ticker-item">
+            <span class="ticker-coin">BTC</span>
+            <span class="ticker-price" id="tick-btc">$--</span>
+            <span class="ticker-change" id="tick-btc-chg">--</span>
+          </div>
+          <div class="ticker-divider"></div>
+          <div class="ticker-item">
+            <span class="ticker-coin">ETH</span>
+            <span class="ticker-price" id="tick-eth">$--</span>
+            <span class="ticker-change" id="tick-eth-chg">--</span>
+          </div>
+          <div class="ticker-divider"></div>
+          <div class="ticker-item">
+            <span class="ticker-coin">SOL</span>
+            <span class="ticker-price" id="tick-sol">$--</span>
+            <span class="ticker-change" id="tick-sol-chg">--</span>
+          </div>
+        </div>
+        <div class="last-update" id="lastUpdate">Updating...</div>
+      </div>
+    </header>
+
+    <!-- ====== DASHBOARD TAB ====== -->
+    <section class="tab-content active" id="tab-dashboard">
+      <!-- Stats Row -->
+      <div class="stats-grid">
+        <div class="stat-card" id="stat-portfolio">
+          <div class="stat-icon green">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Portfolio Value</span>
+            <span class="stat-value" id="statPortfolioVal">$12,847.32</span>
+            <span class="stat-delta positive" id="statPortfolioDelta">+$824.50 (6.85%)</span>
+          </div>
+        </div>
+        <div class="stat-card" id="stat-pnl">
+          <div class="stat-icon purple">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Total P&L</span>
+            <span class="stat-value" id="statPnl">+$2,347.32</span>
+            <span class="stat-delta positive" id="statPnlDelta">+22.38% all time</span>
+          </div>
+        </div>
+        <div class="stat-card" id="stat-signals">
+          <div class="stat-icon blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Active Signals</span>
+            <span class="stat-value" id="statSignals">3 BUY</span>
+            <span class="stat-delta" id="statSignalsDelta">AI confidence: 87%</span>
+          </div>
+        </div>
+        <div class="stat-card" id="stat-trades">
+          <div class="stat-icon orange">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Win Rate</span>
+            <span class="stat-value" id="statWinRate">73.2%</span>
+            <span class="stat-delta positive" id="statWinDelta">38/52 trades won</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Row -->
+      <div class="charts-row">
+        <!-- Main Price Chart -->
+        <div class="card chart-card main-chart-card">
+          <div class="card-header">
+            <div class="card-title">Price Chart</div>
+            <div class="chart-controls">
+              <div class="coin-selector">
+                <button class="coin-btn active" onclick="selectChartCoin('BTCUSDT', this)">BTC</button>
+                <button class="coin-btn" onclick="selectChartCoin('ETHUSDT', this)">ETH</button>
+                <button class="coin-btn" onclick="selectChartCoin('SOLUSDT', this)">SOL</button>
+                <button class="coin-btn" onclick="selectChartCoin('BNBUSDT', this)">BNB</button>
+              </div>
+              <div class="timeframe-selector">
+                <button class="tf-btn" onclick="selectTimeframe(1, this)">1D</button>
+                <button class="tf-btn active" onclick="selectTimeframe(7, this)">7D</button>
+                <button class="tf-btn" onclick="selectTimeframe(30, this)">1M</button>
+                <button class="tf-btn" onclick="selectTimeframe(90, this)">3M</button>
+              </div>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="priceChart"></canvas>
+          </div>
+          <div class="chart-ai-overlay" id="chartAiOverlay">
+            <div class="ai-signal-marker buy" style="left:20%">▲ BUY</div>
+            <div class="ai-signal-marker sell" style="left:65%">▼ SELL</div>
+          </div>
+        </div>
+
+        <!-- AI Signal Panel -->
+        <div class="card signal-summary-card">
+          <div class="card-header">
+            <div class="card-title">AI Signal Engine</div>
+            <div class="ai-brain-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
+                <path d="M9.5 2a2.5 2.5 0 0 1 5 0v1a7 7 0 0 1 7 7v1c0 3.866-3.134 7-7 7H9.5a7 7 0 0 1-7-7V10a7 7 0 0 1 7-7V2z"/>
+                <line x1="12" y1="12" x2="12" y2="12.01"/>
+              </svg>
+            </div>
+          </div>
+          <div class="ai-current-signal" id="aiCurrentSignal">
+            <div class="signal-coin-label" id="signalCoinLabel">BTC/USDT</div>
+            <div class="signal-action buy" id="signalAction">🤖 STRONG BUY</div>
+            <div class="signal-confidence">
+              <span>AI Confidence</span>
+              <div class="confidence-bar">
+                <div class="confidence-fill" id="confidenceFill" style="width: 87%"></div>
+              </div>
+              <span class="confidence-pct" id="confidencePct">87%</span>
+            </div>
+          </div>
+
+          <div class="indicator-list" id="indicatorList">
+            <div class="indicator-row">
+              <span class="ind-name">RSI (14)</span>
+              <span class="ind-val" id="ind-rsi">--</span>
+              <span class="ind-signal buy" id="ind-rsi-sig">BUY</span>
+            </div>
+            <div class="indicator-row">
+              <span class="ind-name">MACD</span>
+              <span class="ind-val" id="ind-macd">--</span>
+              <span class="ind-signal buy" id="ind-macd-sig">BUY</span>
+            </div>
+            <div class="indicator-row">
+              <span class="ind-name">EMA 20/50</span>
+              <span class="ind-val" id="ind-ema">--</span>
+              <span class="ind-signal neutral" id="ind-ema-sig">HOLD</span>
+            </div>
+            <div class="indicator-row">
+              <span class="ind-name">BB Width</span>
+              <span class="ind-val" id="ind-bb">--</span>
+              <span class="ind-signal sell" id="ind-bb-sig">SELL</span>
+            </div>
+            <div class="indicator-row">
+              <span class="ind-name">Volume OBV</span>
+              <span class="ind-val" id="ind-vol">--</span>
+              <span class="ind-signal buy" id="ind-vol-sig">BUY</span>
+            </div>
+            <div class="indicator-row">
+              <span class="ind-name">Stoch RSI</span>
+              <span class="ind-val" id="ind-stoch">--</span>
+              <span class="ind-signal buy" id="ind-stoch-sig">BUY</span>
+            </div>
+          </div>
+
+          <button class="execute-btn" id="executeBtn" onclick="executeTrade()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"><polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/></svg>
+            Execute Trade
+          </button>
+        </div>
+      </div>
+
+      <!-- Bottom Row -->
+      <div class="bottom-row">
+        <!-- Portfolio Donut -->
+        <div class="card portfolio-donut-card">
+          <div class="card-header">
+            <div class="card-title">Portfolio Allocation</div>
+          </div>
+          <div class="donut-wrapper">
+            <canvas id="portfolioDonut"></canvas>
+            <div class="donut-center">
+              <span class="donut-total" id="donutTotal">$12,847</span>
+              <span class="donut-label">Total</span>
+            </div>
+          </div>
+          <div class="donut-legend" id="donutLegend"></div>
+        </div>
+
+        <!-- Recent Trades -->
+        <div class="card recent-trades-card">
+          <div class="card-header">
+            <div class="card-title">Recent Bot Trades</div>
+            <span class="view-all" onclick="switchTab('trades')">View All →</span>
+          </div>
+          <div class="trades-list" id="recentTradesList"></div>
+        </div>
+
+        <!-- Market Sentiment -->
+        <div class="card sentiment-card">
+          <div class="card-header">
+            <div class="card-title">Market Sentiment</div>
+          </div>
+          <div class="sentiment-meter">
+            <div class="meter-arc">
+              <svg viewBox="0 0 200 110" class="gauge-svg">
+                <defs>
+                  <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#FF4757" />
+                    <stop offset="50%" stop-color="#FFA502" />
+                    <stop offset="100%" stop-color="#2ED573" />
+                  </linearGradient>
+                </defs>
+                <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="20" stroke-linecap="round"/>
+                <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#gaugeGrad)" stroke-width="20" stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="0" opacity="0.9"/>
+                <line id="gaugeNeedle" x1="100" y1="100" x2="100" y2="30" stroke="white" stroke-width="3" stroke-linecap="round" transform="rotate(-90, 100, 100)" />
+                <circle cx="100" cy="100" r="6" fill="white"/>
+              </svg>
+            </div>
+            <div class="sentiment-value" id="sentimentValue">Fear & Greed: 72</div>
+            <div class="sentiment-label" id="sentimentLabel">Greed</div>
+          </div>
+          <div class="sentiment-breakdown" id="sentimentBreakdown">
+            <div class="sent-item">
+              <span>Volatility</span><span class="sent-val" id="sent-vol">48</span>
+            </div>
+            <div class="sent-item">
+              <span>Momentum</span><span class="sent-val" id="sent-mom">78</span>
+            </div>
+            <div class="sent-item">
+              <span>Social Media</span><span class="sent-val" id="sent-soc">65</span>
+            </div>
+            <div class="sent-item">
+              <span>Market Cap</span><span class="sent-val" id="sent-cap">81</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== MARKETS TAB ====== -->
+    <section class="tab-content" id="tab-markets">
+      <div class="card markets-card">
+        <div class="card-header">
+          <div class="card-title">Live Market Data</div>
+          <div class="market-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="marketSearch" placeholder="Search coins..." oninput="filterMarkets(this.value)" />
+          </div>
+        </div>
+        <div class="markets-table-wrapper">
+          <table class="markets-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Coin</th>
+                <th>Price</th>
+                <th>24h Change</th>
+                <th>Market Cap</th>
+                <th>Volume 24h</th>
+                <th>AI Signal</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="marketsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== SIGNALS TAB ====== -->
+    <section class="tab-content" id="tab-signals">
+      <div class="signals-header">
+        <h2>AI Trading Signals</h2>
+        <p>Real-time signals generated by our multi-indicator AI engine</p>
+      </div>
+      <div class="signals-grid" id="signalsGrid"></div>
+    </section>
+
+    <!-- ====== PORTFOLIO TAB ====== -->
+    <section class="tab-content" id="tab-portfolio">
+      <div class="portfolio-header-row">
+        <div class="card portfolio-value-card">
+          <div class="pv-label">Total Portfolio Value</div>
+          <div class="pv-value" id="pvTotal">$12,847.32</div>
+          <div class="pv-change positive" id="pvChange">↑ +$824.50 (6.85%) today</div>
+          <div class="pv-chart-mini">
+            <canvas id="portfolioMiniChart" height="60"></canvas>
+          </div>
+        </div>
+        <div class="card portfolio-stats-row">
+          <div class="ps-stat">
+            <span class="ps-label">Invested</span>
+            <span class="ps-val" id="psInvested">$10,500.00</span>
+          </div>
+          <div class="ps-divider"></div>
+          <div class="ps-stat">
+            <span class="ps-label">Profit</span>
+            <span class="ps-val positive" id="psProfit">+$2,347.32</span>
+          </div>
+          <div class="ps-divider"></div>
+          <div class="ps-stat">
+            <span class="ps-label">Return</span>
+            <span class="ps-val positive" id="psReturn">+22.35%</span>
+          </div>
+          <div class="ps-divider"></div>
+          <div class="ps-stat">
+            <span class="ps-label">Best Asset</span>
+            <span class="ps-val" id="psBest">SOL +48.2%</span>
+          </div>
+        </div>
+      </div>
+      <div class="card portfolio-holdings-card">
+        <div class="card-header">
+          <div class="card-title">Holdings</div>
+          <button class="add-btn" onclick="openAddHolding()">+ Add Holding</button>
+        </div>
+        <div class="holdings-table-wrapper">
+          <table class="holdings-table">
+            <thead>
+              <tr>
+                <th>Asset</th>
+                <th>Amount</th>
+                <th>Avg Buy Price</th>
+                <th>Current Price</th>
+                <th>Value</th>
+                <th>P&L</th>
+                <th>Allocation</th>
+              </tr>
+            </thead>
+            <tbody id="holdingsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== TRADES TAB ====== -->
+    <section class="tab-content" id="tab-trades">
+      <div class="card trades-card">
+        <div class="card-header">
+          <div class="card-title">Trade History</div>
+          <div class="trade-filters">
+            <select id="tradeFilterCoin" onchange="filterTrades()">
+              <option value="">All Coins</option>
+              <option value="BTC">BTC</option>
+              <option value="ETH">ETH</option>
+              <option value="SOL">SOL</option>
+            </select>
+            <select id="tradeFilterType" onchange="filterTrades()">
+              <option value="">All Types</option>
+              <option value="BUY">Buy</option>
+              <option value="SELL">Sell</option>
+            </select>
+          </div>
+        </div>
+        <div class="trades-summary-row" id="tradeSummaryRow"></div>
+        <div class="trades-table-wrapper">
+          <table class="trades-table">
+            <thead>
+              <tr>
+                <th>Date & Time</th>
+                <th>Coin</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Price</th>
+                <th>Total</th>
+                <th>P&L</th>
+                <th>AI Reason</th>
+              </tr>
+            </thead>
+            <tbody id="tradesTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== BACKTESTING TAB ====== -->
+    <section class="tab-content" id="tab-backtest">
+      <div class="backtest-layout">
+        <div class="card backtest-config-card">
+          <div class="card-header">
+            <div class="card-title">Strategy Configuration</div>
+          </div>
+          <div class="config-form">
+            <div class="form-group">
+              <label>Coin Pair</label>
+              <select id="bt-coin">
+                <option value="BTCUSDT">BTC/USDT</option>
+                <option value="ETHUSDT">ETH/USDT</option>
+                <option value="SOLUSDT">SOL/USDT</option>
+                <option value="BNBUSDT">BNB/USDT</option>
+                <option value="XRPUSDT">XRP/USDT</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Strategy</label>
+              <select id="bt-strategy">
+                <option value="rsi_macd">RSI + MACD</option>
+                <option value="ema_cross">EMA Crossover</option>
+                <option value="bb_breakout">Bollinger Breakout</option>
+                <option value="combined">Full AI Strategy</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Time Period</label>
+              <select id="bt-period">
+                <option value="30">30 Days</option>
+                <option value="90">90 Days</option>
+                <option value="180">180 Days</option>
+                <option value="365">1 Year</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Initial Capital ($)</label>
+              <input type="number" id="bt-capital" value="10000" />
+            </div>
+            <div class="form-group">
+              <label>Risk Per Trade (%)</label>
+              <input type="number" id="bt-risk" value="2" min="0.5" max="10" step="0.5" />
+            </div>
+            <div class="form-group">
+              <label>Stop Loss (%)</label>
+              <input type="number" id="bt-sl" value="3" min="1" max="20" step="0.5" />
+            </div>
+            <div class="form-group">
+              <label>Take Profit (%)</label>
+              <input type="number" id="bt-tp" value="6" min="1" max="50" step="1" />
+            </div>
+            <button class="run-backtest-btn" onclick="runBacktest()" id="runBacktestBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Run Backtest
+            </button>
+          </div>
+        </div>
+
+        <div class="backtest-results-col">
+          <div class="card backtest-result-card" id="backtestResultCard">
+            <div class="card-header">
+              <div class="card-title">Backtest Results</div>
+            </div>
+            <div class="backtest-placeholder" id="backtestPlaceholder">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48" opacity="0.3"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <p>Configure your strategy and run the backtest to see results</p>
+            </div>
+            <div class="backtest-result-content hidden" id="backtestResultContent">
+              <div class="bt-stats-grid">
+                <div class="bt-stat">
+                  <span class="bt-stat-label">Total Return</span>
+                  <span class="bt-stat-val positive" id="bt-res-return">--</span>
+                </div>
+                <div class="bt-stat">
+                  <span class="bt-stat-label">Total Trades</span>
+                  <span class="bt-stat-val" id="bt-res-trades">--</span>
+                </div>
+                <div class="bt-stat">
+                  <span class="bt-stat-label">Win Rate</span>
+                  <span class="bt-stat-val" id="bt-res-winrate">--</span>
+                </div>
+                <div class="bt-stat">
+                  <span class="bt-stat-label">Max Drawdown</span>
+                  <span class="bt-stat-val negative" id="bt-res-dd">--</span>
+                </div>
+                <div class="bt-stat">
+                  <span class="bt-stat-label">Sharpe Ratio</span>
+                  <span class="bt-stat-val" id="bt-res-sharpe">--</span>
+                </div>
+                <div class="bt-stat">
+                  <span class="bt-stat-label">Profit Factor</span>
+                  <span class="bt-stat-val" id="bt-res-pf">--</span>
+                </div>
+              </div>
+              <div class="bt-chart-container">
+                <canvas id="backtestChart" height="200"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== SETTINGS TAB ====== -->
+    <section class="tab-content" id="tab-settings">
+      <!-- Binance API Key Card (full width) -->
+      <div class="card api-key-card" style="margin-bottom:16px">
+        <div class="card-header">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="card-title">Binance API Connection</div>
+            <span id="apiKeyBadge" class="api-key-badge paper">○ PAPER TRADING</span>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button id="testApiBtn" class="test-api-btn" onclick="testApiConnection()">🔌 Test Connection</button>
+            <button class="clear-api-btn" onclick="clearApiKeys()">🗑 Clear Keys</button>
+          </div>
+        </div>
+        <div class="api-key-form">
+          <div class="api-warning">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span>Your keys are stored <strong>only in your browser</strong> (localStorage) and sent <strong>directly to Binance</strong>. Never shared with anyone. Enable <strong>Spot Trading</strong> permission only — never withdrawal.</span>
+          </div>
+          <div class="api-inputs-row">
+            <div class="api-input-group">
+              <label>API Key</label>
+              <input type="text" id="set-api-key" placeholder="Enter your Binance API Key..." autocomplete="off" spellcheck="false" />
+            </div>
+            <div class="api-input-group">
+              <label>API Secret</label>
+              <input type="password" id="set-api-secret" placeholder="Enter your Binance Secret Key..." autocomplete="off" />
+            </div>
+            <button class="save-api-btn" onclick="saveApiKeys()">💾 Save & Enable</button>
+          </div>
+          <div class="api-info-row">
+            <div class="api-info-item">
+              <span class="api-info-icon">📊</span>
+              <span><strong>Without keys:</strong> Live prices via WebSocket, paper trading, signals, backtesting — all work free</span>
+            </div>
+            <div class="api-info-item">
+              <span class="api-info-icon">⚡</span>
+              <span><strong>With keys:</strong> Real order placement on Binance, live balance sync, actual trade history</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-grid">
+        <div class="card settings-card">
+          <div class="card-header"><div class="card-title">Bot Configuration</div></div>
+          <div class="settings-form">
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-name">Auto Trading</span>
+                <span class="setting-desc">Allow bot to execute trades automatically</span>
+              </div>
+              <div class="setting-control">
+                <input type="checkbox" id="set-auto" checked />
+                <label for="set-auto" class="toggle-label"></label>
+              </div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-name">Max Trade Amount ($)</span>
+                <span class="setting-desc">Maximum USDT per single trade</span>
+              </div>
+              <input type="number" id="set-max-trade" value="500" class="setting-input" />
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-name">Daily Trade Limit</span>
+                <span class="setting-desc">Maximum number of trades per day</span>
+              </div>
+              <input type="number" id="set-daily-limit" value="10" class="setting-input" />
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-name">Stop Loss (%)</span>
+                <span class="setting-desc">Global stop loss percentage</span>
+              </div>
+              <input type="number" id="set-sl" value="3" class="setting-input" />
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-name">Take Profit (%)</span>
+                <span class="setting-desc">Global take profit percentage</span>
+              </div>
+              <input type="number" id="set-tp" value="8" class="setting-input" />
+            </div>
+          </div>
+        </div>
+
+        <div class="card settings-card">
+          <div class="card-header"><div class="card-title">AI Strategy Settings</div></div>
+          <div class="settings-form">
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-name">RSI Period</span>
+                <span class="setting-desc">Relative Strength Index lookback period</span>
+              </div>
+              <input type="number" id="set-rsi" value="14" class="setting-input" />
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-name">RSI Oversold</span>
+                <span class="setting-desc">RSI buy signal threshold</span>
+              </div>
+              <input type="number" id="set-rsi-low" value="30" class="setting-input" />
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-name">RSI Overbought</span>
+                <span class="setting-desc">RSI sell signal threshold</span>
+              </div>
+              <input type="number" id="set-rsi-high" value="70" class="setting-input" />
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-name">EMA Fast Period</span>
+                <span class="setting-desc">Short EMA period for crossover</span>
+              </div>
+              <input type="number" id="set-ema-fast" value="20" class="setting-input" />
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-name">EMA Slow Period</span>
+                <span class="setting-desc">Long EMA period for crossover</span>
+              </div>
+              <input type="number" id="set-ema-slow" value="50" class="setting-input" />
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-name">Min Confidence (%)</span>
+                <span class="setting-desc">Minimum AI confidence to execute trade</span>
+              </div>
+              <input type="number" id="set-confidence" value="70" class="setting-input" />
+            </div>
+          </div>
+        </div>
+
+        <div class="card settings-card">
+          <div class="card-header"><div class="card-title">Notifications</div></div>
+          <div class="settings-form">
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-name">Trade Alerts</span>
+                <span class="setting-desc">Notify when a trade is executed</span>
+              </div>
+              <div class="setting-control">
+                <input type="checkbox" id="set-notif-trade" checked />
+                <label for="set-notif-trade" class="toggle-label"></label>
+              </div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-name">Signal Alerts</span>
+                <span class="setting-desc">Notify on new strong signals</span>
+              </div>
+              <div class="setting-control">
+                <input type="checkbox" id="set-notif-signal" checked />
+                <label for="set-notif-signal" class="toggle-label"></label>
+              </div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-name">Price Alerts</span>
+                <span class="setting-desc">Notify on significant price swings</span>
+              </div>
+              <div class="setting-control">
+                <input type="checkbox" id="set-notif-price" />
+                <label for="set-notif-price" class="toggle-label"></label>
+              </div>
+            </div>
+          </div>
+          <button class="save-settings-btn" onclick="saveSettings()">Save All Settings</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Trade Execution Modal -->
+  <div class="modal-overlay hidden" id="tradeModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalTitle">Execute Trade</h3>
+        <button class="modal-close" onclick="closeModal('tradeModal')">✕</button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <div class="trade-confirm">
+          <div class="tc-row"><span>Action:</span><span class="tc-val buy" id="tcAction">BUY</span></div>
+          <div class="tc-row"><span>Asset:</span><span class="tc-val" id="tcAsset">BTC/USDT</span></div>
+          <div class="tc-row"><span>Price:</span><span class="tc-val" id="tcPrice">$--</span></div>
+          <div class="tc-row"><span>Amount (USDT):</span>
+            <input type="number" id="tcAmount" value="500" class="tc-input" />
+          </div>
+          <div class="tc-row"><span>AI Confidence:</span><span class="tc-val" id="tcConf">87%</span></div>
+          <div id="tradeModeNote" style="font-size:11px;color:var(--text-muted);padding:10px 0;border-top:1px solid var(--border);margin-top:4px">📝 PAPER MODE — Add API key in Settings for live trading</div>
+          <div class="tc-row"><span>Stop Loss:</span><span class="tc-val negative" id="tcSL">-3%</span></div>
+          <div class="tc-row"><span>Take Profit:</span><span class="tc-val positive" id="tcTP">+8%</span></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeModal('tradeModal')">Cancel</button>
+        <button class="btn-confirm buy" id="confirmTradeBtn" onclick="confirmTrade()">Confirm BUY</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
