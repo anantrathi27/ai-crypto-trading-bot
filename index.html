@@ -1,19 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CryptoMind AI — Intelligent Trading Bot</title>
-  <meta name="description" content="Advanced AI-powered cryptocurrency trading bot with real-time signals, portfolio tracking, and automated strategies." />
+  <meta name="description"
+    content="Advanced AI-powered cryptocurrency trading bot with real-time signals, portfolio tracking, and automated strategies." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <!-- Lightweight Charts for candlesticks -->
   <script src="https://unpkg.com/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js"></script>
 </head>
+
 <body>
   <!-- Animated Background -->
   <div class="bg-grid"></div>
@@ -58,32 +63,60 @@
 
     <ul class="nav-links">
       <li class="nav-item active" id="nav-dashboard" onclick="switchTab('dashboard')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7" rx="1" />
+          <rect x="14" y="3" width="7" height="7" rx="1" />
+          <rect x="3" y="14" width="7" height="7" rx="1" />
+          <rect x="14" y="14" width="7" height="7" rx="1" />
+        </svg>
         <span>Dashboard</span>
       </li>
       <li class="nav-item" id="nav-markets" onclick="switchTab('markets')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+          <polyline points="16 7 22 7 22 13" />
+        </svg>
         <span>Markets</span>
       </li>
       <li class="nav-item" id="nav-signals" onclick="switchTab('signals')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3" />
+          <path
+            d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83" />
+        </svg>
         <span>AI Signals</span>
         <span class="badge" id="signalBadge">3</span>
       </li>
       <li class="nav-item" id="nav-portfolio" onclick="switchTab('portfolio')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="7" width="20" height="14" rx="2" />
+          <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
+        </svg>
         <span>Portfolio</span>
       </li>
       <li class="nav-item" id="nav-trades" onclick="switchTab('trades')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+          <line x1="16" y1="13" x2="8" y2="13" />
+          <line x1="16" y1="17" x2="8" y2="17" />
+          <polyline points="10 9 9 9 8 9" />
+        </svg>
         <span>Trade History</span>
       </li>
       <li class="nav-item" id="nav-backtest" onclick="switchTab('backtest')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10" />
+          <polyline points="12 6 12 12 16 14" />
+        </svg>
         <span>Backtesting</span>
       </li>
       <li class="nav-item" id="nav-settings" onclick="switchTab('settings')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3" />
+          <path
+            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+        </svg>
         <span>Settings</span>
       </li>
     </ul>
@@ -102,7 +135,11 @@
     <header class="topbar">
       <div class="topbar-left">
         <button class="menu-btn" onclick="toggleSidebar()" id="menuBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
         </button>
         <div class="page-title" id="pageTitle">Dashboard</div>
       </div>
@@ -136,7 +173,10 @@
       <div class="stats-grid">
         <div class="stat-card" id="stat-portfolio">
           <div class="stat-icon green">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="1" x2="12" y2="23" />
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+            </svg>
           </div>
           <div class="stat-info">
             <span class="stat-label">Portfolio Value</span>
@@ -146,7 +186,10 @@
         </div>
         <div class="stat-card" id="stat-pnl">
           <div class="stat-icon purple">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+              <polyline points="17 6 23 6 23 12" />
+            </svg>
           </div>
           <div class="stat-info">
             <span class="stat-label">Total P&L</span>
@@ -156,7 +199,9 @@
         </div>
         <div class="stat-card" id="stat-signals">
           <div class="stat-icon blue">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+            </svg>
           </div>
           <div class="stat-info">
             <span class="stat-label">Active Signals</span>
@@ -166,7 +211,10 @@
         </div>
         <div class="stat-card" id="stat-trades">
           <div class="stat-icon orange">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
           </div>
           <div class="stat-info">
             <span class="stat-label">Win Rate</span>
@@ -212,8 +260,9 @@
             <div class="card-title">AI Signal Engine</div>
             <div class="ai-brain-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
-                <path d="M9.5 2a2.5 2.5 0 0 1 5 0v1a7 7 0 0 1 7 7v1c0 3.866-3.134 7-7 7H9.5a7 7 0 0 1-7-7V10a7 7 0 0 1 7-7V2z"/>
-                <line x1="12" y1="12" x2="12" y2="12.01"/>
+                <path
+                  d="M9.5 2a2.5 2.5 0 0 1 5 0v1a7 7 0 0 1 7 7v1c0 3.866-3.134 7-7 7H9.5a7 7 0 0 1-7-7V10a7 7 0 0 1 7-7V2z" />
+                <line x1="12" y1="12" x2="12" y2="12.01" />
               </svg>
             </div>
           </div>
@@ -263,7 +312,10 @@
           </div>
 
           <button class="execute-btn" id="executeBtn" onclick="executeTrade()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"><polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16">
+              <polyline points="13 17 18 12 13 7" />
+              <polyline points="6 17 11 12 6 7" />
+            </svg>
             Execute Trade
           </button>
         </div>
@@ -310,10 +362,13 @@
                     <stop offset="100%" stop-color="#2ED573" />
                   </linearGradient>
                 </defs>
-                <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="20" stroke-linecap="round"/>
-                <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#gaugeGrad)" stroke-width="20" stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="0" opacity="0.9"/>
-                <line id="gaugeNeedle" x1="100" y1="100" x2="100" y2="30" stroke="white" stroke-width="3" stroke-linecap="round" transform="rotate(-90, 100, 100)" />
-                <circle cx="100" cy="100" r="6" fill="white"/>
+                <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="20"
+                  stroke-linecap="round" />
+                <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#gaugeGrad)" stroke-width="20"
+                  stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="0" opacity="0.9" />
+                <line id="gaugeNeedle" x1="100" y1="100" x2="100" y2="30" stroke="white" stroke-width="3"
+                  stroke-linecap="round" transform="rotate(-90, 100, 100)" />
+                <circle cx="100" cy="100" r="6" fill="white" />
               </svg>
             </div>
             <div class="sentiment-value" id="sentimentValue">Fear & Greed: 72</div>
@@ -343,7 +398,10 @@
         <div class="card-header">
           <div class="card-title">Live Market Data</div>
           <div class="market-search">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
             <input type="text" id="marketSearch" placeholder="Search coins..." oninput="filterMarkets(this.value)" />
           </div>
         </div>
@@ -526,7 +584,9 @@
               <input type="number" id="bt-tp" value="6" min="1" max="50" step="1" />
             </div>
             <button class="run-backtest-btn" onclick="runBacktest()" id="runBacktestBtn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16">
+                <polygon points="5 3 19 12 5 21 5 3" />
+              </svg>
               Run Backtest
             </button>
           </div>
@@ -538,7 +598,11 @@
               <div class="card-title">Backtest Results</div>
             </div>
             <div class="backtest-placeholder" id="backtestPlaceholder">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48" opacity="0.3"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48"
+                opacity="0.3">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
               <p>Configure your strategy and run the backtest to see results</p>
             </div>
             <div class="backtest-result-content hidden" id="backtestResultContent">
@@ -593,28 +657,38 @@
         </div>
         <div class="api-key-form">
           <div class="api-warning">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-            <span>Your keys are stored <strong>only in your browser</strong> (localStorage) and sent <strong>directly to Binance</strong>. Never shared with anyone. Enable <strong>Spot Trading</strong> permission only — never withdrawal.</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+            <span>Your keys are stored <strong>only in your browser</strong> (localStorage) and sent <strong>directly to
+                Binance</strong>. Never shared with anyone. Enable <strong>Spot Trading</strong> permission only — never
+              withdrawal.</span>
           </div>
           <div class="api-inputs-row">
             <div class="api-input-group">
               <label>API Key</label>
-              <input type="text" id="set-api-key" placeholder="Enter your Binance API Key..." autocomplete="off" spellcheck="false" />
+              <input type="text" id="set-api-key" placeholder="Enter your Binance API Key..." autocomplete="off"
+                spellcheck="false" />
             </div>
             <div class="api-input-group">
               <label>API Secret</label>
-              <input type="password" id="set-api-secret" placeholder="Enter your Binance Secret Key..." autocomplete="off" />
+              <input type="password" id="set-api-secret" placeholder="Enter your Binance Secret Key..."
+                autocomplete="off" />
             </div>
             <button class="save-api-btn" onclick="saveApiKeys()">💾 Save & Enable</button>
           </div>
           <div class="api-info-row">
             <div class="api-info-item">
               <span class="api-info-icon">📊</span>
-              <span><strong>Without keys:</strong> Live prices via WebSocket, paper trading, signals, backtesting — all work free</span>
+              <span><strong>Without keys:</strong> Live prices via WebSocket, paper trading, signals, backtesting — all
+                work free</span>
             </div>
             <div class="api-info-item">
               <span class="api-info-icon">⚡</span>
-              <span><strong>With keys:</strong> Real order placement on Binance, live balance sync, actual trade history</span>
+              <span><strong>With keys:</strong> Real order placement on Binance, live balance sync, actual trade
+                history</span>
             </div>
           </div>
         </div>
@@ -622,7 +696,9 @@
 
       <div class="settings-grid">
         <div class="card settings-card">
-          <div class="card-header"><div class="card-title">Bot Configuration</div></div>
+          <div class="card-header">
+            <div class="card-title">Bot Configuration</div>
+          </div>
           <div class="settings-form">
             <div class="setting-row">
               <div class="setting-info">
@@ -666,7 +742,9 @@
         </div>
 
         <div class="card settings-card">
-          <div class="card-header"><div class="card-title">AI Strategy Settings</div></div>
+          <div class="card-header">
+            <div class="card-title">AI Strategy Settings</div>
+          </div>
           <div class="settings-form">
             <div class="setting-row">
               <div class="setting-info">
@@ -714,7 +792,9 @@
         </div>
 
         <div class="card settings-card">
-          <div class="card-header"><div class="card-title">Notifications</div></div>
+          <div class="card-header">
+            <div class="card-title">Notifications</div>
+          </div>
           <div class="settings-form">
             <div class="setting-row">
               <div class="setting-info">
@@ -769,7 +849,9 @@
             <input type="number" id="tcAmount" value="500" class="tc-input" />
           </div>
           <div class="tc-row"><span>AI Confidence:</span><span class="tc-val" id="tcConf">87%</span></div>
-          <div id="tradeModeNote" style="font-size:11px;color:var(--text-muted);padding:10px 0;border-top:1px solid var(--border);margin-top:4px">📝 PAPER MODE — Add API key in Settings for live trading</div>
+          <div id="tradeModeNote"
+            style="font-size:11px;color:var(--text-muted);padding:10px 0;border-top:1px solid var(--border);margin-top:4px">
+            📝 PAPER MODE — Add API key in Settings for live trading</div>
           <div class="tc-row"><span>Stop Loss:</span><span class="tc-val negative" id="tcSL">-3%</span></div>
           <div class="tc-row"><span>Take Profit:</span><span class="tc-val positive" id="tcTP">+8%</span></div>
         </div>
@@ -786,4 +868,5 @@
 
   <script src="app.js"></script>
 </body>
+
 </html>
